@@ -12,15 +12,48 @@ public class ThirdPersonMovement : MonoBehaviour
 
     public float turnSmoothTime = 0.1f;
     float turnSmoothVelocity;
+
+    public enum playerState {Idle, Dodging, Attacking, Jumping }
+    playerState currState;
+    public GameObject playerObject;
+    public Renderer playerRenderer;
+    public Rigidbody rb;
+    public float forceAmt;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        rb = gameObject.GetComponent<Rigidbody>();
+        playerRenderer = playerObject.GetComponent <Renderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        //Test keys
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            playerStateSwitch(playerState.Dodging);
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            playerStateSwitch(playerState.Jumping);
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            playerStateSwitch(playerState.Attacking);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            playerStateSwitch(playerState.Idle);
+        }
+
+
+        //Movement
         float horizontal = Input.GetAxisRaw("Horizontal"); //between -1,1 AD
         float vertical = Input.GetAxisRaw("Vertical"); //between -1,1 WS
 
@@ -39,4 +72,42 @@ public class ThirdPersonMovement : MonoBehaviour
         }
     
     }
+
+    void playerStateSwitch(playerState state)
+    {
+        switch(state)
+        {
+            case playerState.Idle:
+                playerRenderer.material.color = Color.white;
+                currState = playerState.Idle;
+                print("Idle");
+                break;
+            case playerState.Attacking:
+                playerRenderer.material.color = Color.red;
+                currState = playerState.Attacking;
+                //Perform Attack
+                print("Attacking");
+                break;
+            case playerState.Jumping:
+                playerRenderer.material.color = Color.green;
+                currState = playerState.Jumping;
+                //Perform Jump
+                print("Jumping");
+                break;
+            case playerState.Dodging:
+                playerRenderer.material.color = Color.blue;
+                currState = playerState.Dodging;
+                //Perform Dodge
+                Dodge();
+                print("Dodging");
+                break;         
+        }
+    }
+
+    void Dodge()
+    {
+       // rb.AddForce(transform.forward * forceAmt, ForceMode.Force);
+
+    }
+
 }
